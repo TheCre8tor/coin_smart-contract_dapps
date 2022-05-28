@@ -109,6 +109,24 @@ function App() {
     event.preventDefault();
     try {
       if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const tokenContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        const txn = await tokenContract.burn(
+          utils.parseEther(inputValue.burnAmount)
+        );
+        console.log("Burning tokens...");
+        await txn.wait();
+        console.log("Token burnt...", txn.hash());
+
+        let tokenSupply = await tokenContract.totalSupply();
+        tokenSupply = utils.formatEther(tokenSupply);
+        setTokenTotalSupply(tokenSupply);
       } else {
         console.log("Ethereum object not found, install Metamask.");
         setError("Install a MetaMask wallet to get our token.");
