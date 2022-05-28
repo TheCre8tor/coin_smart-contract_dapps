@@ -160,7 +160,7 @@ function App() {
 
         // Get token total supply -->
         const tokenSupply = await tokenContract.totalSupply();
-        tokenSupply = utils.formatEther(totalSupply);
+        tokenSupply = utils.formatEther(tokenSupply);
         setTokenTotalSupply(tokenSupply);
       } else {
         console.log("Ethereum object not found, install Metamask.");
