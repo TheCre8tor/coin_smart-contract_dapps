@@ -140,6 +140,28 @@ function App() {
     event.preventDefault();
     try {
       if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const tokenContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let tokenOwner = await tokenContract.owner();
+
+        const txn = await tokenContract.mint(
+          tokenOwner,
+          utils.parseEther(inputValue.mintAmount)
+        );
+        console.log("Minting tokens...");
+        await txn.wait();
+        console.log("Token minted...", txn.hash());
+
+        // Get token total supply -->
+        const tokenSupply = await tokenContract.totalSupply();
+        tokenSupply = utils.formatEther(totalSupply);
+        setTokenTotalSupply(tokenSupply);
       } else {
         console.log("Ethereum object not found, install Metamask.");
         setError("Install a MetaMask wallet to get our token.");
