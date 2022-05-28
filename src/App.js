@@ -80,6 +80,22 @@ function App() {
 
     try {
       if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const tokenContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        const txn = await tokenContract.transfer(
+          inputValue.walletAddress,
+          utils.parseEther(inputValue.transferAmount)
+        );
+
+        console.log("Transfering tokens...");
+        await txn.wait();
+        console.log("Token Transfered", txn.hash());
       } else {
         console.log("Ethereum object not found, install Metamask.");
         setError("Install a MetaMask wallet to get our token.");
